@@ -36,12 +36,13 @@ body {
 }
 
 #hdr-left {
-  font-size: 4.8vw;
+  font-size: 3.2vw;
   font-weight: 900;
   color: #111;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   letter-spacing: -1px;
+  white-space: nowrap;
 }
 
 #hdr-center { text-align: center; }
@@ -88,7 +89,7 @@ body {
 /* ===== KARTU WAKTU SHOLAT ===== */
 #cards-container {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 2px;
   background: #ccc;
   z-index: 2;
@@ -106,7 +107,7 @@ body {
 }
 
 .card .title { font-size: 1.3vw; color: #666; font-weight: 600; margin-bottom: 0.3vh; }
-.card .time { font-size: 2.8vw; font-weight: 800; color: #111; font-variant-numeric: tabular-nums; }
+.card .time { font-size: 2.5vw; font-weight: 800; color: #111; font-variant-numeric: tabular-nums; }
 .card .accent-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
 
 .card:nth-child(1) .accent-line { background: #8e24aa; }
@@ -115,6 +116,7 @@ body {
 .card:nth-child(4) .accent-line { background: #fdd835; }
 .card:nth-child(5) .accent-line { background: #fb8c00; }
 .card:nth-child(6) .accent-line { background: #e53935; }
+.card:nth-child(7) .accent-line { background: #3f51b5; }
 
 /* Kartu Aktif / Next (Ungu) */
 .card.active-next { background: var(--card-active) !important; color: #fff !important; }
@@ -341,7 +343,7 @@ body {
   <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
 
-<!-- KARTU JADWAL SHOLAT -->
+<!-- KARTU WAKTU SHOLAT -->
 <div id="cards-container">
   <div class="card"><div class="title">Imsak</div><div class="time" id="t-imsak">--:--</div><div class="accent-line"></div></div>
   <div class="card"><div class="title">Subuh</div><div class="time" id="t-subuh">--:--</div><div class="accent-line"></div></div>
@@ -349,6 +351,7 @@ body {
   <div class="card"><div class="title">Dzuhur</div><div class="time" id="t-dzuhur">--:--</div><div class="accent-line"></div></div>
   <div class="card"><div class="title">Ashar</div><div class="time" id="t-ashar">--:--</div><div class="accent-line"></div></div>
   <div class="card"><div class="title">Maghrib</div><div class="time" id="t-maghrib">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Isya</div><div class="time" id="t-isya">--:--</div><div class="accent-line"></div></div>
   
   <!-- KARTU UNGU (WAKTU BERIKUTNYA) -->
   <div class="card active-next">
@@ -516,6 +519,7 @@ function tick(){
   $('t-dzuhur').textContent = hm(T[2]);
   $('t-ashar').textContent = hm(T[3]);
   $('t-maghrib').textContent = hm(T[4]);
+  $('t-isya').textContent = hm(T[5]);
 
   // LOGIKA CEK MASUK WAKTU SHOLAT & IQAMAH
   var azanDuration = 30; 
@@ -617,7 +621,6 @@ function bindPosInput(){
     el.onchange = function(){
       var a = this.files;
       for(var i=0; i<a.length; i++){
-        // Kompresi ketat maks 800px & kualitas 0.5 agar hemat penyimpanan
         rs(a[i], 800, 'image/jpeg', 0.5, function(u){
           C.pos.push(u);
           if(!save()){
