@@ -9,7 +9,7 @@
   --bg-main: #e0e0e0;
   --header-bg: #ffffff;
   --card-bg: #ffffff;
-  --card-active: #0288d1; /* Warna Biru Utama untuk Sholat Selanjutnya */
+  --card-active: #673ab7;
   --tx-dark: #1d1d1f;
   --tx-sub: #55555d;
 }
@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
 }
 
-/* ===== HEADER ATAS ===== */
+/* ===== HEADER ATAS (LEBIH BESAR & JELAS) ===== */
 #header {
   background: var(--header-bg);
   display: grid;
@@ -95,7 +95,7 @@ body {
   position: relative;
   background: #111 url('masjid.jpg') center/cover no-repeat;
   width: 100%;
-  min-height: 38vh;
+  min-height: 35vh;
 }
 
 .badge-left {
@@ -124,50 +124,29 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-/* ===== 7 KARTU WAKTU SHOLAT ===== */
+/* ===== KARTU WAKTU SHOLAT ===== */
 #cards-container {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 2px;
-  background: #bbb;
+  background: #ccc;
   z-index: 2;
 }
 
 .card {
-  background: #ffffff;
+  background: #fff;
   text-align: center;
-  padding: 1.2vh 0.5vw;
+  padding: 1vh 0.5vw;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  min-height: 12vh;
-  transition: background 0.3s, color 0.3s;
+  min-height: 11vh;
 }
 
-.card .title { 
-  font-size: 1.4vw; 
-  color: #444; 
-  font-weight: 700; 
-  margin-bottom: 0.4vh; 
-}
-
-.card .time { 
-  font-size: 2.7vw; 
-  font-weight: 900; 
-  color: #111; 
-  font-variant-numeric: tabular-nums; 
-  line-height: 1;
-}
-
-.card .accent-line { 
-  position: absolute; 
-  bottom: 0; 
-  left: 0; 
-  right: 0; 
-  height: 5px; 
-}
+.card .title { font-size: 1.3vw; color: #555; font-weight: 700; margin-bottom: 0.3vh; }
+.card .time { font-size: 2.5vw; font-weight: 800; color: #111; font-variant-numeric: tabular-nums; }
+.card .accent-line { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
 
 .card:nth-child(1) .accent-line { background: #8e24aa; }
 .card:nth-child(2) .accent-line { background: #00acc1; }
@@ -177,34 +156,11 @@ body {
 .card:nth-child(6) .accent-line { background: #e53935; }
 .card:nth-child(7) .accent-line { background: #3f51b5; }
 
-/* BADGE COUNTDOWN DI ATAS KARTU AKTIF */
-.card .card-cd {
-  display: none;
-  font-size: 0.95vw;
-  font-weight: 800;
-  background: #ffd54f;
-  color: #000;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-bottom: 4px;
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* TAMPILAN KARTU AKTIF (BERWARNA BIRU BERSIH) */
-.card.active-next { 
-  background: var(--card-active) !important; 
-  color: #ffffff !important; 
-}
-.card.active-next .title { 
-  color: #ffffff !important; 
-}
-.card.active-next .time { 
-  color: #ffffff !important; 
-}
-.card.active-next .card-cd { 
-  display: inline-block; 
-}
+/* Kartu Aktif / Next (Ungu) */
+.card.active-next { background: var(--card-active) !important; color: #fff !important; }
+.card.active-next .title { color: #e0e0e0 !important; }
+.card.active-next .time { color: #ffffff !important; }
+.card.active-next .countdown { font-size: 1.1vw; color: #ffd54f; font-weight: bold; margin-top: 0.2vh; font-variant-numeric: tabular-nums; }
 
 /* ===== TEKS BERJALAN ===== */
 #run {
@@ -365,7 +321,7 @@ body {
 
 #sl { display:none; position:fixed; inset:0; background:#000 center/contain no-repeat; z-index:5; }
 
-/* RESPONSIF HP */
+/* TAMPILAN RESPOSIF KHUSUS LAYAR HP (PORTRAIT) */
 @media (max-width: 768px) {
   body { display: block; overflow-y: auto; }
   #header { grid-template-columns: 1fr; text-align: center; gap: 8px; padding: 12px; }
@@ -384,7 +340,8 @@ body {
   .card { padding: 12px 6px; min-height: auto; }
   .card .title { font-size: 0.9rem; }
   .card .time { font-size: 1.6rem; }
-  .card .card-cd { font-size: 0.75rem; }
+  .card.active-next { grid-column: span 2; }
+  .card.active-next .countdown { font-size: 1rem; }
   #run { font-size: 1rem; padding: 8px 0; }
   #btn-gear { width: 3rem; height: 3rem; font-size: 1.4rem; opacity: 0.6; }
   #iqamah-status { font-size: 1.5rem; }
@@ -412,9 +369,10 @@ body {
     <span id="clock">--:--:--</span>
   </div>
   <div id="hdr-center">
+    <!-- LOGO MASJID (MENCOBA LOGO.PNG TERLEBIH DAHULU) -->
     <img id="hdr-logo" src="logo.png" alt="Logo" onerror="if(this.src.indexOf('logo.jpeg') === -1){ this.src='logo.jpeg'; } else if(this.src.indexOf('logo.jpg') === -1){ this.src='logo.jpg'; } else { this.style.display='none'; }">
     <div id="hdr-title-box">
-      <h1 id="nm">Masjid AirNav Balikpapan</h1>
+      <h1 id="nm">Mushola AirNav Balikpapan</h1>
       <p id="sub">Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76115</p>
     </div>
   </div>
@@ -430,10 +388,370 @@ body {
   <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
 
-<!-- 7 KARTU WAKTU SHOLAT PAS 1 BARIS -->
+<!-- KARTU WAKTU SHOLAT -->
 <div id="cards-container">
-  <div class="card" id="c-0"><div class="card-cd" id="cd-0">-00:00:00</div><div class="title">Imsak</div><div class="time" id="t-imsak">--:--</div><div class="accent-line"></div></div>
-  <div class="card" id="c-1"><div class="card-cd" id="cd-1">-00:00:00</div><div class="title">Subuh</div><div class="time" id="t-subuh">--:--</div><div class="accent-line"></div></div>
-  <div class="card" id="c-2"><div class="card-cd" id="cd-2">-00:00:00</div><div class="title">Terbit</div><div class="time" id="t-terbit">--:--</div><div class="accent-line"></div></div>
-  <div class="card" id="c-3"><div class="card-cd" id="cd-3">-00:00:00</div><div class="title">Dzuhur</div><div class="time" id="t-dzuhur">--:--</div><div class="accent-line"></div></div>
-  <div class="card" id="c-4"><div class="card-cd" id="
+  <div class="card"><div class="title">Imsak</div><div class="time" id="t-imsak">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Subuh</div><div class="time" id="t-subuh">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Terbit</div><div class="time" id="t-terbit">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Dzuhur</div><div class="time" id="t-dzuhur">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Ashar</div><div class="time" id="t-ashar">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Maghrib</div><div class="time" id="t-maghrib">--:--</div><div class="accent-line"></div></div>
+  <div class="card"><div class="title">Isya</div><div class="time" id="t-isya">--:--</div><div class="accent-line"></div></div>
+  
+  <!-- KARTU UNGU (WAKTU BERIKUTNYA) -->
+  <div class="card active-next">
+    <div class="title" id="next-name">Isya</div>
+    <div class="time" id="next-time">--:--</div>
+    <div class="countdown" id="next-count">-00:00:00</div>
+  </div>
+</div>
+
+<!-- TEKS BERJALAN -->
+<div id="run"><span id="rt">Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.</span></div>
+
+<!-- FORM PENGATURAN -->
+<div id="set">
+  <h2>⚙️ Pengaturan Jam Digital Masjid</h2>
+  
+  <label>📢 Tulisan Berjalan (Running Text Bottom):
+    <textarea id="f_t" rows="3" placeholder="Ketik teks imbauan / pengumuman berjalan di sini..."></textarea>
+  </label>
+
+  <label>Nama Masjid: <input id="f_nama"></label>
+  <label>Alamat / Sub Judul: <input id="f_alamat"></label>
+  <label>Teks Badge Merah (Kanan Atas Foto): <input id="f_event"></label>
+  <label>Foto Latar Belakang Gedung: <input type="file" id="f_bg" accept="image/*"></label>
+  
+  <label>Tambah Poster Pengumuman Slide: 
+    <span id="f_pos_wrapper"><input type="file" id="f_pos" accept="image/*" multiple></span>
+    <div class="poster-info" id="p-count">Poster Tersimpan (0)</div>
+    <div id="poster-list"></div>
+  </label>
+  <button id="cp" type="button" style="background:#d32f2f; margin-top: 10px;">🗑️ Hapus Semua Poster</button>
+
+  <label>Iqamah (menit): Subuh <input class="s" id="f_i0" type="number"> Dzuhur <input class="s" id="f_i1" type="number"> Ashar <input class="s" id="f_i2" type="number"> Maghrib <input class="s" id="f_i3" type="number"> Isya <input class="s" id="f_i4" type="number"></label>
+  <label>Koreksi Hijriah (hari): <input class="s" id="f_h" type="number"></label>
+  <label>Koreksi Jadwal (menit): Subuh <input class="s" id="f_k0" type="number"> Terbit <input class="s" id="f_k1" type="number"> Dzuhur <input class="s" id="f_k2" type="number"> Ashar <input class="s" id="f_k3" type="number"> Maghrib <input class="s" id="f_k4" type="number"> Isya <input class="s" id="f_k5" type="number"></label>
+  
+  <br>
+  <button id="sv">💾 Simpan Pengaturan</button>
+  <button id="fs">📺 Layar Penuh (Fullscreen)</button>
+  <button id="cl" class="btn-close">❌ Tutup</button>
+</div>
+
+<script>
+// KOORDINAT SEPINGGAN BALIKPAPAN (PVMQ+8R7)
+var LAT = -1.2658, LNG = 116.8977, TZ = 8; 
+var NM = ['Subuh','Terbit','Dzuhur','Ashar','Maghrib','Isya'];
+
+var C = {
+  nama: 'Masjid AirNav Balikpapan',
+  alamat: 'Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76115',
+  event: 'Sepinggan, Balikpapan',
+  iq: [10,10,10,5,10],
+  h: 0,
+  bg: '',
+  pos: [],
+  k: [0,0,0,0,0,0],
+  t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
+};
+
+try { var s=JSON.parse(localStorage.getItem('jm_v3')); if(s) for(var x in s) C[x]=s[x]; } catch(e){}
+
+function applyBg(){
+  if(C.bg){
+    document.getElementById('main-view').style.backgroundImage = "url('" + C.bg + "')";
+  }
+}
+applyBg();
+
+function save(){
+  try{ 
+    localStorage.setItem('jm_v3', JSON.stringify(C)); 
+    renderPosterList(); 
+    return 1; 
+  }
+  catch(e){ 
+    alert('Penyimpanan browser penuh. Gambar poster baru tidak dapat disimpan.'); 
+    return 0; 
+  }
+}
+
+function renderPosterList(){
+  var cnt = (C.pos && C.pos.length) ? C.pos.length : 0;
+  $('p-count').textContent = 'Poster Tersimpan (' + cnt + ')';
+  var container = $('poster-list');
+  container.innerHTML = '';
+  
+  if(cnt > 0){
+    C.pos.forEach(function(imgData, idx){
+      var div = document.createElement('div');
+      div.className = 'poster-item';
+      div.innerHTML = '<img src="' + imgData + '"><button class="del-btn" title="Hapus Gambar Ini" onclick="deleteSinglePoster(' + idx + ')">✕</button>';
+      container.appendChild(div);
+    });
+  }
+}
+
+function deleteSinglePoster(idx){
+  C.pos.splice(idx, 1);
+  LS = -1;
+  save();
+}
+
+var LS = -1;
+var R = Math.PI/180;
+function fx(a,b){ return a-b*Math.floor(a/b); }
+
+function calc(y,m,d){
+  var jd=Date.UTC(y,m,d)/864e5+2440587.5-LNG/360;
+  function sun(j){
+    var D=j-2451545, g=fx(357.529+.98560028*D,360), q=fx(280.459+.98564736*D,360);
+    var L=fx(q+1.915*Math.sin(g*R)+.02*Math.sin(2*g*R),360), e=23.439-3.6e-7*D;
+    var RA=fx(Math.atan2(Math.cos(e*R)*Math.sin(L*R),Math.cos(L*R))/R/15,24);
+    return{dec:Math.asin(Math.sin(e*R)*Math.sin(L*R))/R, eqt:q/15-RA};
+  }
+  function mid(t){ return fx(12-sun(jd+t).eqt,24); }
+  function ang(a,t,ccw){
+    var s=sun(jd+t);
+    var T=Math.acos((-Math.sin(a*R)-Math.sin(s.dec*R)*Math.sin(LAT*R))/(Math.cos(s.dec*R)*Math.cos(LAT*R)))/R/15;
+    return mid(t)+(ccw?-T:T);
+  }
+  function asr(t){ var s=sun(jd+t); return ang(-Math.atan(1/(1+Math.tan(Math.abs(LAT-s.dec)*R)))/R,t,0); }
+  var o=TZ-LNG/15;
+  var h=[ang(20,5/24,1), ang(.833,5/24,1), mid(.5), asr(13/24), ang(.833,18/24,0), ang(18,18/24,0)];
+  var ih=[2,-2,2,2,2,2];
+  return h.map(function(v,i){ return Math.round((v+o)*3600)+ih[i]*60+(C.k[i]||0)*60; });
+}
+
+function p2(n){ return(n<10?'0':'')+n; }
+function hm(s){ s=Math.round(s/60); return p2(Math.floor(s/60)%24)+':'+p2(s%60); }
+function hms(s){ return p2(Math.floor(s/3600))+':'+p2(Math.floor(s%3600/60))+':'+p2(s%60); }
+function $(i){ return document.getElementById(i); }
+
+function hijri(y,m,d){
+  try {
+    var t=new Intl.DateTimeFormat('id-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m,d)));
+    return /H$/.test(t)?t:t+' H';
+  } catch(e){ return ''; }
+}
+
+var HARI=['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+var BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+var SHOLAT_IQ_MAP = [0, -1, 1, 2, 3, 4]; 
+
+function tick(){
+  var w=new Date(), y=w.getFullYear(), m=w.getMonth(), d=w.getDate();
+  var sec=w.getHours()*3600+w.getMinutes()*60+w.getSeconds();
+  var T=calc(y,m,d), N=calc(y,m,d+1);
+
+  $('nm').textContent = C.nama;
+  $('sub').textContent = C.alamat;
+  $('badge-event').textContent = C.event;
+  if(!C.event) $('badge-event').style.display='none'; else $('badge-event').style.display='block';
+
+  // JAM BERJALAN
+  $('clock').textContent = p2(w.getHours()) + ':' + p2(w.getMinutes()) + ':' + p2(w.getSeconds());
+  
+  $('dates-m').textContent = HARI[w.getDay()] + ', ' + d + ' ' + BLN[m] + ' ' + y;
+  $('dates-h').textContent = hijri(y,m,d+(sec>=(T[4]||0)?1:0)+(+C.h||0));
+
+  // WAKTU SHOLAT
+  $('t-imsak').textContent = hm(T[0]-600);
+  $('t-subuh').textContent = hm(T[0]);
+  $('t-terbit').textContent = hm(T[1]);
+  $('t-dzuhur').textContent = hm(T[2]);
+  $('t-ashar').textContent = hm(T[3]);
+  $('t-maghrib').textContent = hm(T[4]);
+  $('t-isya').textContent = hm(T[5]);
+
+  // LOGIKA CEK MASUK WAKTU SHOLAT & IQAMAH
+  var azanDuration = 30; 
+  var activeIqamah = false;
+
+  for(var i=0; i<6; i++){
+    if(i === 1) continue; 
+    
+    var sholatSec = T[i];
+    var iqIdx = SHOLAT_IQ_MAP[i];
+    var iqMinutes = (iqIdx !== -1) ? (C.iq[iqIdx] || 10) : 10;
+    var iqamahTotalSec = azanDuration + (iqMinutes * 60);
+
+    if(sec >= sholatSec && sec < (sholatSec + iqamahTotalSec + 10)){
+      activeIqamah = true;
+      var elapsed = sec - sholatSec;
+      var iqOverlay = $('iqamah-overlay');
+
+      if(elapsed < azanDuration){
+        iqOverlay.style.display = 'flex';
+        $('iqamah-status').textContent = 'SAATNYA AZAN ' + NM[i].toUpperCase();
+        $('iqamah-timer').textContent = hm(sholatSec);
+        $('iqamah-sub').textContent = 'Mendengarkan Azan & Membaca Doa Setelah Azan';
+      } else if(elapsed < iqamahTotalSec){
+        var remainingIq = iqamahTotalSec - elapsed;
+        var rMin = Math.floor(remainingIq / 60);
+        var rSec = remainingIq % 60;
+
+        iqOverlay.style.display = 'flex';
+        $('iqamah-status').textContent = 'COUNTDOWN IQAMAH ' + NM[i].toUpperCase();
+        $('iqamah-timer').textContent = p2(rMin) + ':' + p2(rSec);
+        $('iqamah-sub').textContent = 'Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel';
+      } else {
+        iqOverlay.style.display = 'flex';
+        $('iqamah-status').textContent = 'LURUSKAN & RAPATKAN SHAF';
+        $('iqamah-timer').textContent = '00:00';
+        $('iqamah-sub').textContent = 'SAATNYA SHOLAT BERJAMAAH';
+      }
+      break;
+    }
+  }
+
+  if(!activeIqamah){
+    $('iqamah-overlay').style.display = 'none';
+  }
+
+  // Waktu Sholat Berikutnya
+  var NN=NM.slice(); if(w.getDay()==5) NN[2]='Jumat';
+  var nextIdx = -1, nextTimeSec = 0, nextName = '';
+
+  for(var i=0; i<6; i++){
+    if(T[i] > sec){
+      nextIdx = i;
+      nextTimeSec = T[i];
+      nextName = NN[i];
+      break;
+    }
+  }
+
+  if(nextIdx === -1){
+    nextIdx = 0;
+    nextTimeSec = N[0] + 86400;
+    nextName = 'Subuh';
+  }
+
+  $('next-name').textContent = nextName;
+  $('next-time').textContent = hm(nextTimeSec);
+  
+  var diff = nextTimeSec - sec;
+  $('next-count').textContent = '-' + hms(diff);
+
+  // Slide Poster
+  var PS=C.pos||[], sl=$('sl'), sh=0;
+  if(PS.length && !activeIqamah){
+    var pr=20+PS.length*10, pp=Math.floor(Date.now()/1000)%pr;
+    if(pp>=20){
+      var ix=Math.floor((pp-20)/10);
+      sh=1;
+      if(ix!==LS){ sl.style.backgroundImage='url('+PS[ix]+')'; LS=ix; }
+    }
+  }
+  sl.style.display=sh?'block':'none';
+}
+
+setInterval(tick,1000); tick();
+
+function rt(){ 
+  var s=$('rt'); 
+  s.textContent = C.t || 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'; 
+  s.style.animationDuration = Math.max(15, s.textContent.length * 0.25) + 's'; 
+} 
+rt();
+
+function bindPosInput(){
+  var wrapper = $('f_pos_wrapper');
+  wrapper.innerHTML = '<input type="file" id="f_pos" accept="image/*" multiple>';
+  var el = $('f_pos');
+  if(el){
+    el.onchange = function(){
+      var a = this.files;
+      for(var i=0; i<a.length; i++){
+        rs(a[i], 800, 'image/jpeg', 0.5, function(u){
+          C.pos.push(u);
+          if(!save()){
+            C.pos.pop();
+          }
+          LS = -1;
+        });
+      }
+    };
+  }
+}
+
+function rs(f, mx, t, q, cb){
+  var r=new FileReader();
+  r.onload=function(){
+    var im=new Image();
+    im.onload=function(){
+      var k=Math.min(1, mx/Math.max(im.width, im.height)), c=document.createElement('canvas');
+      c.width=Math.round(im.width*k); c.height=Math.round(im.height*k);
+      var ctx = c.getContext('2d');
+      ctx.drawImage(im,0,0,c.width,c.height);
+      cb(c.toDataURL(t, q || 0.5));
+    };
+    im.src=r.result;
+  };
+  r.readAsDataURL(f);
+}
+
+$('f_bg').onchange=function(){ 
+  var f=this.files[0]; 
+  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; save(); applyBg(); }); 
+};
+
+bindPosInput();
+
+/* HAPUS SEMUA POSTER KESELURUHAN */
+$('cp').onclick=function(){ 
+  if(confirm('Apakah Anda yakin ingin menghapus semua poster pengumuman?')){
+    C.pos = []; 
+    LS = -1; 
+    save(); 
+    $('sl').style.display = 'none'; 
+    bindPosInput();
+    alert('Semua poster pengumuman berhasil dihapus!');
+  }
+};
+
+var P=$('set');
+function fill(){
+  $('f_nama').value=C.nama;
+  $('f_alamat').value=C.alamat||'';
+  $('f_event').value=C.event||'';
+  $('f_h').value=C.h;
+  $('f_t').value=C.t||'';
+  renderPosterList();
+  for(var i=0;i<5;i++) $('f_i'+i).value=C.iq[i];
+  for(i=0;i<6;i++) $('f_k'+i).value=C.k[i];
+}
+
+function open_(){ fill(); P.style.display='block'; $('f_t').focus(); }
+
+$('btn-gear').onclick = open_;
+$('cl').onclick = function(){ P.style.display='none'; };
+
+$('sv').onclick=function(){
+  C.nama=$('f_nama').value;
+  C.alamat=$('f_alamat').value;
+  C.event=$('f_event').value;
+  C.h=+$('f_h').value||0;
+  C.t=$('f_t').value;
+  for(var i=0;i<5;i++) C.iq[i]=+$('f_i'+i).value||0;
+  for(i=0;i<6;i++) C.k[i]=+$('f_k'+i).value||0;
+  save(); 
+  rt(); 
+  tick(); 
+  P.style.display='none';
+};
+
+$('fs').onclick=function(){
+  try{(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement);}catch(e){}
+};
+
+document.onkeydown=function(e){
+  if(e.key==='Escape') P.style.display='none';
+  if(e.key.toLowerCase()==='s' && P.style.display!=='block') open_();
+};
+</script>
+</body>
+</html>
