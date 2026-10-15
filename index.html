@@ -27,9 +27,9 @@ body {
 #header {
   background: var(--header-bg);
   display: grid;
-  grid-template-columns: 1.3fr 2.2fr 1.3fr;
+  grid-template-columns: 1.3fr 2.4fr 1.3fr;
   align-items: center;
-  padding: 1.8vh 2.5vw;
+  padding: 1.5vh 2vw;
   box-shadow: 0 4px 15px rgba(0,0,0,0.18);
   z-index: 2;
   position: relative;
@@ -56,28 +56,31 @@ body {
 
 /* LOGO MASJID */
 #hdr-logo {
-  max-height: 5.5vw;
+  height: 4.8vw;
+  max-height: 65px;
   width: auto;
   object-fit: contain;
+  border-radius: 6px;
 }
 
 #hdr-title-box {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 #hdr-center h1 { 
-  font-size: 2.6vw; 
+  font-size: 2.4vw; 
   font-weight: 900; 
   color: #000000; 
-  margin-bottom: 0.3vh; 
+  margin-bottom: 0.2vh; 
   line-height: 1.1;
   letter-spacing: -0.3px;
 }
 
 #hdr-center p { 
-  font-size: 1.2vw; 
+  font-size: 1.1vw; 
   color: var(--tx-sub); 
   font-weight: 600; 
   line-height: 1.2;
@@ -323,6 +326,8 @@ body {
   body { display: block; overflow-y: auto; }
   #header { grid-template-columns: 1fr; text-align: center; gap: 8px; padding: 12px; }
   #hdr-left { font-size: 2.2rem; text-align: center; }
+  #hdr-center { flex-direction: column; }
+  #hdr-title-box { align-items: center; text-align: center; }
   #hdr-center h1 { font-size: 1.4rem; }
   #hdr-center p { font-size: 0.85rem; }
   #hdr-logo { max-height: 50px; }
@@ -364,10 +369,11 @@ body {
     <span id="clock">--:--:--</span>
   </div>
   <div id="hdr-center">
-    <img id="hdr-logo" src="logo.png" alt="Logo" onerror="this.style.display='none'">
+    <!-- LOGO MASJID (MENCOBA LOGO.JPEG TERLEBIH DAHULU) -->
+    <img id="hdr-logo" src="logo.jpeg" alt="Logo" onerror="if(this.src.indexOf('logo.jpg') === -1){ this.src='logo.jpg'; } else if(this.src.indexOf('logo.png') === -1){ this.src='logo.png'; } else { this.style.display='none'; }">
     <div id="hdr-title-box">
       <h1 id="nm">Masjid AirNav Balikpapan</h1>
-      <p id="sub">Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur</p>
+      <p id="sub">Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76115</p>
     </div>
   </div>
   <div id="hdr-right">
@@ -379,7 +385,7 @@ body {
 <!-- FOTO UTAMA -->
 <div id="main-view">
   <div class="badge-left">Mode Muadzin</div>
-  <div class="badge-right" id="badge-event">Airnav Indonesia, Balikpapan</div>
+  <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
 
 <!-- KARTU WAKTU SHOLAT -->
