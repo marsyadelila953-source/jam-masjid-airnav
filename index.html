@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Jam Digital Masjid Sepinggan Balikpapan</title>
+
+<!-- FIREBASE SDK (CDN VERSION) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
 <style>
 :root {
   --bg-main: #e0e0e0;
@@ -59,14 +64,14 @@ body {
 #hdr-marquee {
   display: inline-flex;
   align-items: center;
-  gap: 8vw; /* Jeda antar pengulangan teks */
+  gap: 8vw;
   animation: hdr-run 25s linear infinite;
   will-change: transform;
 }
 
 @keyframes hdr-run {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); } /* Berjalan seamless 50% untuk looping terus menerus */
+  100% { transform: translateX(-50%); }
 }
 
 .hdr-block {
@@ -94,7 +99,6 @@ body {
   flex-shrink: 0;
 }
 
-/* NAMA MASJID & ALAMAT DIPERBESAR DAN DIPERTEGAS */
 #hdr-center h1 { 
   font-size: 2.8vw; 
   font-weight: 900; 
@@ -394,10 +398,9 @@ body {
     <span id="clock">--:--:--</span>
   </div>
   
-  <!-- AREA TENGAH DENGAN TEKS BERJALAN CONTINUOUS (SEAMLESS LOOP) -->
+  <!-- AREA TENGAH DENGAN TEKS BERJALAN CONTINUOUS -->
   <div id="hdr-center">
     <div id="hdr-marquee">
-      <!-- BLOK PERTAMA -->
       <div class="hdr-block">
         <img class="hdr-logo" src="logo.png" alt="Logo" onerror="if(this.src.indexOf('logo.jpeg') === -1){ this.src='logo.jpeg'; } else if(this.src.indexOf('logo.jpg') === -1){ this.src='logo.jpg'; } else { this.style.display='none'; }">
         <div class="hdr-title-box">
@@ -405,7 +408,6 @@ body {
           <p class="sub-text">Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76115</p>
         </div>
       </div>
-      <!-- BLOK KEDUA (PENYAMBUNG AGAR TIDAK KOSONG) -->
       <div class="hdr-block">
         <img class="hdr-logo" src="logo.png" alt="Logo" onerror="if(this.src.indexOf('logo.jpeg') === -1){ this.src='logo.jpeg'; } else if(this.src.indexOf('logo.jpg') === -1){ this.src='logo.jpg'; } else { this.style.display='none'; }">
         <div class="hdr-title-box">
@@ -474,13 +476,29 @@ body {
   <label>Koreksi Jadwal (menit): Subuh <input class="s" id="f_k0" type="number"> Terbit <input class="s" id="f_k1" type="number"> Dzuhur <input class="s" id="f_k2" type="number"> Ashar <input class="s" id="f_k3" type="number"> Maghrib <input class="s" id="f_k4" type="number"> Isya <input class="s" id="f_k5" type="number"></label>
   
   <br>
-  <button id="sv">💾 Simpan Pengaturan</button>
+  <button id="sv">💾 Simpan Pengaturan (Realtime Cloud)</button>
   <button id="fs">📺 Layar Penuh (Fullscreen)</button>
   <button id="cl" class="btn-close">❌ Tutup</button>
 </div>
 
 <script>
-// KOORDINAT SEPINGGAN BALIKPAPAN (PVMQ+8R7)
+// INITIALIZE FIREBASE SINKRONISASI CLOUD
+const firebaseConfig = {
+  apiKey: "AIzaSyDLaKhfuOM550C0RVvzDg_8g2H-MNxIosE",
+  authDomain: "jam-masjid-airnav.firebaseapp.com",
+  databaseURL: "https://jam-masjid-airnav-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "jam-masjid-airnav",
+  storageBucket: "jam-masjid-airnav.firebasestorage.app",
+  messagingSenderId: "385170185785",
+  appId: "1:385170185785:web:be7e141c474bdb5a0137e8",
+  measurementId: "G-G7CN95FT3E"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dbRef = db.ref('config_masjid');
+
+// KOORDINAT SEPINGGAN BALIKPAPAN
 var LAT = -1.2658, LNG = 116.8977, TZ = 8; 
 var NM = ['Subuh','Terbit','Dzuhur','Ashar','Maghrib','Isya'];
 
@@ -496,25 +514,34 @@ var C = {
   t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
 };
 
-try { var s=JSON.parse(localStorage.getItem('jm_v3')); if(s) for(var x in s) C[x]=s[x]; } catch(e){}
+// LISTEN DATA FIREBASE SECARA REALTIME (TV BISA LANGSUNG UPDATED DARI HP)
+dbRef.on('value', function(snapshot){
+  var data = snapshot.val();
+  if(data){
+    for(var key in data){
+      C[key] = data[key];
+    }
+    applyBg();
+    rt();
+    renderPosterList();
+    tick();
+  }
+});
 
 function applyBg(){
   if(C.bg){
     document.getElementById('main-view').style.backgroundImage = "url('" + C.bg + "')";
   }
 }
-applyBg();
 
 function save(){
-  try{ 
-    localStorage.setItem('jm_v3', JSON.stringify(C)); 
-    renderPosterList(); 
-    return 1; 
-  }
-  catch(e){ 
-    alert('Penyimpanan browser penuh. Gambar poster baru tidak dapat disimpan.'); 
-    return 0; 
-  }
+  // KIRIM DATA LANGSUNG KE FIREBASE CLOUD
+  dbRef.set(C).then(function(){
+    renderPosterList();
+  }).catch(function(err){
+    alert('Gagal menyimpan ke cloud: ' + err.message);
+  });
+  return 1;
 }
 
 function renderPosterList(){
@@ -586,7 +613,6 @@ function tick(){
   var sec=w.getHours()*3600+w.getMinutes()*60+w.getSeconds();
   var T=calc(y,m,d), N=calc(y,m,d+1);
 
-  // UPDATE SELURUH TEKS NAMA MASJID & ALAMAT
   var nms = document.querySelectorAll('.nm-text');
   nms.forEach(function(el){ el.textContent = C.nama; });
 
@@ -713,9 +739,7 @@ function bindPosInput(){
       for(var i=0; i<a.length; i++){
         rs(a[i], 800, 'image/jpeg', 0.5, function(u){
           C.pos.push(u);
-          if(!save()){
-            C.pos.pop();
-          }
+          save();
           LS = -1;
         });
       }
