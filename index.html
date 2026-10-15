@@ -216,7 +216,7 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-/* ===== TOMBOL TRANSPARAN UNTUK PENGATURAN (KANAN BAWAH) & FULLSCREEN (KIRI BAWAH) ===== */
+/* ===== TOMBOL TRANSPARAN UNTUK PENGATURAN & FULLSCREEN ===== */
 .floating-btn {
   position: fixed;
   bottom: 0.5vh;
@@ -232,14 +232,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.2;
+  opacity: 0.2; /* Default: Sangat Transparan */
   transition: opacity 0.3s, transform 0.2s, background 0.3s;
+  outline: none;
 }
 
-.floating-btn:hover, .floating-btn:focus {
+/* BERUBAH WARNA HANYA SAAT KURSOR DIDEKATKAN (HOVER) */
+.floating-btn:hover {
   opacity: 1;
   background: #00897b;
   transform: scale(1.1);
+}
+
+/* SAAT DI-KLIK / PRESSED: PASTI KEMBALI TRANSPARAN SEMENTARA */
+.floating-btn:active {
+  opacity: 0.2;
+  background: rgba(0, 0, 0, 0.4);
+  transform: scale(0.95);
 }
 
 #btn-fullscreen {
@@ -834,8 +843,17 @@ function toggleFullscreen(){
   }
 }
 
-$('btn-fullscreen').onclick = toggleFullscreen;
-$('btn-gear').onclick = open_;
+// FUNGSI UNTUK MERESET FOKUS TOMBOL SUPAYA PASTI TRANSPARAN KEMBALI
+$('btn-fullscreen').onclick = function(){
+  toggleFullscreen();
+  this.blur();
+};
+
+$('btn-gear').onclick = function(){
+  open_();
+  this.blur();
+};
+
 $('cl').onclick = function(){ P.style.display='none'; };
 
 $('sv').onclick=function(){
