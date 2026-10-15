@@ -216,11 +216,10 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-/* ===== TOMBOL SETTING TRANSPARAN ===== */
-#btn-gear {
+/* ===== TOMBOL TRANSPARAN UNTUK PENGATURAN (KANAN BAWAH) & FULLSCREEN (KIRI BAWAH) ===== */
+.floating-btn {
   position: fixed;
   bottom: 0.5vh;
-  right: 0.5vw;
   z-index: 10;
   background: rgba(0, 0, 0, 0.4);
   color: #fff;
@@ -234,13 +233,27 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 0.2;
-  transition: opacity 0.3s, transform 0.2s;
+  transition: opacity 0.3s, transform 0.2s, background 0.3s;
 }
 
-#btn-gear:hover, #btn-gear:focus {
+.floating-btn:hover, .floating-btn:focus {
   opacity: 1;
   background: #00897b;
   transform: scale(1.1);
+}
+
+#btn-fullscreen {
+  left: 0.5vw; /* Ujung Kiri Bawah */
+}
+
+#btn-gear {
+  right: 0.5vw; /* Ujung Kanan Bawah */
+}
+
+.floating-btn svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: #ffffff;
 }
 
 /* ===== OVERLAY LAYAR FULLSCREEN COUNTDOWN IQAMAH ===== */
@@ -372,7 +385,8 @@ body {
   .card.active-next { grid-column: span 2; }
   .card.active-next .countdown { font-size: 1rem; }
   #run { font-size: 1rem; padding: 8px 0; }
-  #btn-gear { width: 3rem; height: 3rem; font-size: 1.4rem; opacity: 0.6; }
+  .floating-btn { width: 3rem; height: 3rem; font-size: 1.4rem; opacity: 0.6; }
+  .floating-btn svg { width: 1.4rem; height: 1.4rem; }
   #iqamah-status { font-size: 1.5rem; }
   #iqamah-timer { font-size: 4rem; }
   #iqamah-sub { font-size: 1rem; }
@@ -381,7 +395,15 @@ body {
 </head>
 <body>
 
-<button id="btn-gear" title="Klik untuk Pengaturan (atau Tekan Tombol 'S')">&#9881;</button>
+<!-- TOMBOL SHORTCUT FULLSCREEN (UJUNG KIRI BAWAH) -->
+<button id="btn-fullscreen" class="floating-btn" title="Layar Penuh (Fullscreen)">
+  <svg viewBox="0 0 24 24">
+    <path d="M5 9h2V7h2V5H5v4zm2 8H5v-4h2v2h2v2H7zm10-2h-2v2h-2v2h4v-4zm-2-6h2V7h2V5h-4v2z"/>
+  </svg>
+</button>
+
+<!-- TOMBOL SHORTCUT PENGATURAN (UJUNG KANAN BAWAH) -->
+<button id="btn-gear" class="floating-btn" title="Klik untuk Pengaturan (atau Tekan Tombol 'S')">&#9881;</button>
 
 <div id="sl"></div>
 
@@ -514,7 +536,7 @@ var C = {
   t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
 };
 
-// LISTEN DATA FIREBASE SECARA REALTIME (TV BISA LANGSUNG UPDATED DARI HP)
+// LISTEN DATA FIREBASE SECARA REALTIME
 dbRef.on('value', function(snapshot){
   var data = snapshot.val();
   if(data){
@@ -535,7 +557,6 @@ function applyBg(){
 }
 
 function save(){
-  // KIRIM DATA LANGSUNG KE FIREBASE CLOUD
   dbRef.set(C).then(function(){
     renderPosterList();
   }).catch(function(err){
@@ -796,6 +817,24 @@ function fill(){
 
 function open_(){ fill(); P.style.display='block'; $('f_t').focus(); }
 
+function toggleFullscreen(){
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    var docEl = document.documentElement;
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen();
+    } else if (docEl.webkitRequestFullscreen) {
+      docEl.webkitRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+}
+
+$('btn-fullscreen').onclick = toggleFullscreen;
 $('btn-gear').onclick = open_;
 $('cl').onclick = function(){ P.style.display='none'; };
 
@@ -813,13 +852,12 @@ $('sv').onclick=function(){
   P.style.display='none';
 };
 
-$('fs').onclick=function(){
-  try{(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement);}catch(e){}
-};
+$('fs').onclick = toggleFullscreen;
 
 document.onkeydown=function(e){
   if(e.key==='Escape') P.style.display='none';
   if(e.key.toLowerCase()==='s' && P.style.display!=='block') open_();
+  if(e.key.toLowerCase()==='f') toggleFullscreen();
 };
 </script>
 </body>
