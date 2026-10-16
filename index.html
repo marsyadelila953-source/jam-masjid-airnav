@@ -918,6 +918,7 @@ $('sv').onclick=function(){
   C.h=+$('f_h').value||0;
   C.t=$('f_t').value;
   
+  // LOGIKA UTAMA: Jika kolom URL diisi, utamakan URL video MP4
   var vurl = $('f_vbg_url').value.trim();
   if(vurl){
     C.vbg = vurl;
