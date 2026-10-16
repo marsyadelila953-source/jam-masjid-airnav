@@ -139,20 +139,6 @@ body {
   display: none;
 }
 
-.badge-left {
-  position: absolute;
-  top: 1.5vh;
-  left: 1.5vw;
-  background: rgba(0,0,0,0.75);
-  color: #fff;
-  padding: 0.6vh 1.2vw;
-  border-radius: 20px;
-  font-size: 1.1vw;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
-  z-index: 1;
-}
-
 .badge-right {
   position: absolute;
   top: 1.5vh;
@@ -421,7 +407,7 @@ body {
   #dates-m { font-size: 1rem; }
   #dates-h { font-size: 0.85rem; }
   #main-view { height: 220px; }
-  .badge-left, .badge-right { font-size: 0.75rem; padding: 4px 10px; }
+  .badge-right { font-size: 0.75rem; padding: 4px 10px; }
   #cards-container { grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 4px; }
   .card { padding: 12px 6px; min-height: auto; }
   .card .title { font-size: 0.9rem; }
@@ -502,7 +488,6 @@ body {
 <!-- FOTO / VIDEO UTAMA -->
 <div id="main-view">
   <video id="bg-video" autoplay loop muted playsinline></video>
-  <div class="badge-left">Mode Muadzin</div>
   <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
 
@@ -735,9 +720,17 @@ function $(i){ return document.getElementById(i); }
 
 function hijri(y,m,d){
   try {
-    var t=new Intl.DateTimeFormat('id-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m,d)));
-    return /H$/.test(t)?t:t+' H';
-  } catch(e){ return ''; }
+    var dateObj = new Date(y, m, d);
+    var formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    var formatted = formatter.format(dateObj);
+    return formatted.replace(/AH|H/g, '').trim() + ' H';
+  } catch(e){ 
+    return ''; 
+  }
 }
 
 var HARI=['Ahad','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -823,9 +816,6 @@ function tick(){
     var iqIdx = SHOLAT_IQ_MAP[i];
     var iqMinutes = (iqIdx !== -1) ? (C.iq[iqIdx] || 10) : 10;
     
-    // PENENTUAN DURASI PRESISI LAYAR AZAN BERDASARKAN SOUND AZAN:
-    // Subuh = 3 Menit 7 Detik (187 detik)
-    // Sholat Lain = 3 Menit 23 Detik (203 detik)
     var azanDuration = (i === 0) ? 187 : 203;
     var iqamahTotalSec = azanDuration + (iqMinutes * 60);
 
@@ -843,14 +833,12 @@ function tick(){
         playAzanSound(i === 0);
       }
 
-      // 1. TAMPILAN KHUSUS AZAN (Selama Durasi Sound Azan Berlangsung)
       if(elapsed < azanDuration){
         iqOverlay.style.display = 'flex';
         $('iqamah-status').textContent = 'SAATNYA AZAN ' + NM[i].toUpperCase();
         $('iqamah-timer').textContent = hm(sholatSec);
         $('iqamah-sub').textContent = 'Mendengarkan Azan & Membaca Doa Setelah Azan';
       } 
-      // 2. SETELAH SOUND AZAN HABIS, BARU MASUK KE TAMPILAN COUNTDOWN IQAMAH
       else if(elapsed < iqamahTotalSec){
         var remainingIq = iqamahTotalSec - elapsed;
         var rMin = Math.floor(remainingIq / 60);
@@ -861,7 +849,6 @@ function tick(){
         $('iqamah-timer').textContent = p2(rMin) + ':' + p2(rSec);
         $('iqamah-sub').textContent = 'Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel';
       } 
-      // 3. SAAT COUNTDOWN IQAMAH HABIS -> TAMPILKAN INSTRUKSI SHOLAT BERJAMAAH
       else {
         iqOverlay.style.display = 'flex';
         $('iqamah-status').textContent = 'LURUSKAN & RAPATKAN SHAF';
