@@ -34,7 +34,7 @@ body {
   display: grid;
   grid-template-columns: 1.3fr 2.4fr 1.3fr;
   align-items: center;
-  padding: 2vh 2vw;
+  padding: 2.3vh 2vw;
   box-shadow: 0 4px 15px rgba(0,0,0,0.18);
   z-index: 2;
   position: relative;
@@ -51,7 +51,6 @@ body {
   white-space: nowrap;
 }
 
-/* AREA TENGAH HEADER DENGAN RUNNING TEXT CONTINUOUS */
 #hdr-center { 
   overflow: hidden;
   white-space: nowrap;
@@ -81,10 +80,9 @@ body {
   flex-shrink: 0;
 }
 
-/* LOGO MASJID */
 .hdr-logo {
   height: 5.5vw;
-  max-height: 75px; /* <-- UKURAN PAS & IDEAL */
+  max-height: 75px;
   width: auto;
   object-fit: contain;
   border-radius: 6px;
@@ -121,12 +119,27 @@ body {
 #dates-m { font-size: 1.8vw; font-weight: 800; color: #111111; }
 #dates-h { font-size: 1.35vw; color: #44444a; font-weight: 700; margin-top: 0.3vh; }
 
-/* ===== AREA FOTO TENGAH ===== */
+/* ===== AREA UTAMA (FOTO / VIDEO BACKGROUND) ===== */
 #main-view {
   position: relative;
   background: #111 url('masjid.jpg') center/cover no-repeat;
   width: 100%;
   min-height: 35vh;
+  overflow: hidden;
+}
+
+#bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  display: none;
 }
 
 .badge-left {
@@ -140,6 +153,7 @@ body {
   font-size: 1.1vw;
   font-weight: 600;
   backdrop-filter: blur(4px);
+  z-index: 1;
 }
 
 .badge-right {
@@ -153,6 +167,7 @@ body {
   font-size: 1.2vw;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
 /* ===== KARTU WAKTU SHOLAT ===== */
@@ -187,7 +202,6 @@ body {
 .card:nth-child(6) .accent-line { background: #e53935; }
 .card:nth-child(7) .accent-line { background: #3f51b5; }
 
-/* Kartu Aktif / Next (Ungu) */
 .card.active-next { background: var(--card-active) !important; color: #fff !important; }
 .card.active-next .title { color: #e0e0e0 !important; }
 .card.active-next .time { color: #ffffff !important; }
@@ -216,7 +230,7 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-/* ===== TOMBOL TRANSPARAN UNTUK PENGATURAN & FULLSCREEN ===== */
+/* ===== TOMBOL SHORTCUT ===== */
 .floating-btn {
   position: fixed;
   bottom: 0.5vh;
@@ -258,7 +272,7 @@ body {
   fill: #ffffff;
 }
 
-/* ===== OVERLAY LAYAR FULLSCREEN IQAMAH ===== */
+/* ===== OVERLAY IQAMAH ===== */
 #iqamah-overlay {
   display: none;
   position: fixed;
@@ -326,7 +340,6 @@ body {
 #set button.btn-close { background: #d32f2f; }
 .poster-info { font-size: 0.9rem; color: #ffca28; margin-top: 6px; font-weight: bold; }
 
-/* DAFTAR LIST POSTER DENGAN PREVIEW */
 #poster-list {
   display: flex;
   flex-wrap: wrap;
@@ -367,14 +380,13 @@ body {
 
 #sl { display:none; position:fixed; inset:0; background:#000 center/contain no-repeat; z-index:5; }
 
-/* RESPONSIF HP */
 @media (max-width: 768px) {
   body { display: block; overflow-y: auto; }
   #header { grid-template-columns: 1fr; text-align: center; gap: 8px; padding: 12px; }
   #hdr-left { font-size: 2.2rem; text-align: center; }
   #hdr-center h1 { font-size: 1.6rem; }
   #hdr-center p { font-size: 0.95rem; }
-  .hdr-logo { max-height: 50px; }
+  .hdr-logo { max-height: 75px; }
   #hdr-right { text-align: center; }
   #dates-m { font-size: 1rem; }
   #dates-h { font-size: 0.85rem; }
@@ -396,6 +408,9 @@ body {
 </style>
 </head>
 <body>
+
+<!-- AUDIO PLAYER AZAN -->
+<audio id="audio-azan" src="https://cdn.islamic.network/adhan/makkah.mp3" preload="auto"></audio>
 
 <!-- TOMBOL SHORTCUT FULLSCREEN -->
 <button id="btn-fullscreen" class="floating-btn" title="Layar Penuh (Fullscreen)">
@@ -447,8 +462,9 @@ body {
   </div>
 </div>
 
-<!-- FOTO UTAMA -->
+<!-- FOTO / VIDEO UTAMA -->
 <div id="main-view">
+  <video id="bg-video" autoplay loop muted playsinline></video>
   <div class="badge-left">Mode Muadzin</div>
   <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
@@ -484,7 +500,13 @@ body {
   <label>Nama Masjid: <input id="f_nama"></label>
   <label>Alamat / Sub Judul: <input id="f_alamat"></label>
   <label>Teks Badge Merah (Kanan Atas Foto): <input id="f_event"></label>
+  
   <label>Foto Latar Belakang Gedung: <input type="file" id="f_bg" accept="image/*"></label>
+  <label>Video Latar Belakang Gedung (.mp4) / Link URL Video: 
+    <input type="file" id="f_vbg" accept="video/mp4,video/webm">
+    <input id="f_vbg_url" placeholder="Atau paste URL Video MP3/MP4 di sini..." style="margin-top: 5px;">
+    <button id="btn_del_video" type="button" style="background:#d32f2f; margin-top:5px; font-size:0.8rem; padding: 4px 10px;">🗑️ Hapus Video (Kembali ke Foto)</button>
+  </label>
   
   <label>Tambah Poster Pengumuman Slide: 
     <span id="f_pos_wrapper"><input type="file" id="f_pos" accept="image/*" multiple></span>
@@ -530,10 +552,13 @@ var C = {
   iq: [10,10,10,5,10],
   h: 0,
   bg: '',
+  vbg: '',
   pos: [],
   k: [0,0,0,0,0,0],
   t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
 };
+
+var playedAzan = {};
 
 dbRef.on('value', function(snapshot){
   var data = snapshot.val();
@@ -549,8 +574,19 @@ dbRef.on('value', function(snapshot){
 });
 
 function applyBg(){
-  if(C.bg){
-    document.getElementById('main-view').style.backgroundImage = "url('" + C.bg + "')";
+  var vidEl = $('bg-video');
+  var mainView = $('main-view');
+
+  if(C.vbg){
+    vidEl.src = C.vbg;
+    vidEl.style.display = 'block';
+    vidEl.play().catch(function(){});
+  } else {
+    vidEl.style.display = 'none';
+    vidEl.pause();
+    if(C.bg){
+      mainView.style.backgroundImage = "url('" + C.bg + "')";
+    }
   }
 }
 
@@ -627,6 +663,14 @@ var BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','Sep
 
 var SHOLAT_IQ_MAP = [0, -1, 1, 2, 3, 4]; 
 
+function playAzanSound(){
+  var audio = $('audio-azan');
+  if(audio){
+    audio.currentTime = 0;
+    audio.play().catch(function(e){ console.log("Autoplay audio terblokir browser TV:", e); });
+  }
+}
+
 function tick(){
   var w=new Date(), y=w.getFullYear(), m=w.getMonth(), d=w.getDate();
   var sec=w.getHours()*3600+w.getMinutes()*60+w.getSeconds();
@@ -670,6 +714,11 @@ function tick(){
       var elapsed = sec - sholatSec;
       var iqOverlay = $('iqamah-overlay');
 
+      if(elapsed === 0 && !playedAzan[i]){
+        playedAzan[i] = true;
+        playAzanSound();
+      }
+
       if(elapsed < azanDuration){
         iqOverlay.style.display = 'flex';
         $('iqamah-status').textContent = 'SAATNYA AZAN ' + NM[i].toUpperCase();
@@ -681,7 +730,6 @@ function tick(){
         var rSec = remainingIq % 60;
 
         iqOverlay.style.display = 'flex';
-        // REVISI HAPUS "COUNTDOWN"
         $('iqamah-status').textContent = 'IQAMAH ' + NM[i].toUpperCase();
         $('iqamah-timer').textContent = p2(rMin) + ':' + p2(rSec);
         $('iqamah-sub').textContent = 'Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel';
@@ -694,6 +742,8 @@ function tick(){
       break;
     }
   }
+
+  if(sec === 0) playedAzan = {};
 
   if(!activeIqamah){
     $('iqamah-overlay').style.display = 'none';
@@ -780,7 +830,28 @@ function rs(f, mx, t, q, cb){
 
 $('f_bg').onchange=function(){ 
   var f=this.files[0]; 
-  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; save(); applyBg(); }); 
+  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; C.vbg=''; save(); applyBg(); }); 
+};
+
+$('f_vbg').onchange=function(){
+  var f=this.files[0];
+  if(f){
+    var r = new FileReader();
+    r.onload = function(){
+      C.vbg = r.result;
+      save();
+      applyBg();
+    };
+    r.readAsDataURL(f);
+  }
+};
+
+$('btn_del_video').onclick = function(){
+  C.vbg = '';
+  $('f_vbg_url').value = '';
+  save();
+  applyBg();
+  alert('Video background dihapus, kembali menggunakan foto.');
 };
 
 bindPosInput();
@@ -803,6 +874,7 @@ function fill(){
   $('f_event').value=C.event||'';
   $('f_h').value=C.h;
   $('f_t').value=C.t||'';
+  $('f_vbg_url').value = C.vbg && C.vbg.indexOf('data:') !== 0 ? C.vbg : '';
   renderPosterList();
   for(var i=0;i<5;i++) $('f_i'+i).value=C.iq[i];
   for(i=0;i<6;i++) $('f_k'+i).value=C.k[i];
@@ -845,9 +917,16 @@ $('sv').onclick=function(){
   C.event=$('f_event').value;
   C.h=+$('f_h').value||0;
   C.t=$('f_t').value;
+  
+  var vurl = $('f_vbg_url').value.trim();
+  if(vurl){
+    C.vbg = vurl;
+  }
+  
   for(var i=0;i<5;i++) C.iq[i]=+$('f_i'+i).value||0;
   for(i=0;i<6;i++) C.k[i]=+$('f_k'+i).value||0;
   save(); 
+  applyBg();
   rt(); 
   tick(); 
   P.style.display='none';
