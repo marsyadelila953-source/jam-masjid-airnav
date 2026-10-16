@@ -589,18 +589,34 @@ function applyBg(){
   }
 
   if(videoSource){
-    vidEl.src = videoSource;
-    vidEl.loop = true;
+    vidEl.pause();
+    
     vidEl.muted = true;
-    vidEl.playsInline = true;
+    vidEl.defaultMuted = true;
+    vidEl.setAttribute('muted', '');
+    vidEl.setAttribute('playsinline', '');
+    vidEl.setAttribute('autoplay', '');
+    vidEl.loop = true;
+
+    if(vidEl.src !== videoSource){
+      vidEl.src = videoSource;
+      vidEl.load();
+    }
+
     vidEl.style.display = 'block';
 
     vidEl.onended = function(){
       vidEl.currentTime = 0;
-      vidEl.play().catch(function(){});
+      var p = vidEl.play();
+      if(p && p.catch) p.catch(function(){});
     };
 
-    vidEl.play().catch(function(e){ console.log("Autoplay video error:", e); });
+    var playPromise = vidEl.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function(error) {
+        console.log("Autoplay dicegah browser TV:", error);
+      });
+    }
   } else {
     vidEl.style.display = 'none';
     vidEl.pause();
