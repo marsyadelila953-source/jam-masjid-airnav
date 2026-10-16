@@ -409,7 +409,7 @@ body {
 </head>
 <body>
 
-<!-- AUDIO PLAYER AZAN LOKAL (100% BEBAS DARI BLOKIR JARINGAN) -->
+<!-- AUDIO PLAYER AZAN LOKAL -->
 <audio id="audio-azan" src="azan.mp3" preload="auto"></audio>
 <audio id="audio-azan-subuh" src="azan-subuh.mp3" preload="auto"></audio>
 
@@ -503,7 +503,7 @@ body {
   <label>Teks Badge Merah (Kanan Atas Foto): <input id="f_event"></label>
   
   <label>Foto Latar Belakang Gedung: <input type="file" id="f_bg" accept="image/*"></label>
-  <label>Video Latar Belakang Gedung (.mp4) / Link URL Video: 
+  <label>Video Latar Belakang (Galeri HP/Laptop 10-30dtk / Link URL): 
     <input type="file" id="f_vbg" accept="video/mp4,video/webm">
     <input id="f_vbg_url" placeholder="Atau paste URL Video MP3/MP4 di sini..." style="margin-top: 5px;">
     <button id="btn_del_video" type="button" style="background:#d32f2f; margin-top:5px; font-size:0.8rem; padding: 4px 10px;">🗑️ Hapus Video (Kembali ke Foto)</button>
@@ -578,8 +578,15 @@ function applyBg(){
   var vidEl = $('bg-video');
   var mainView = $('main-view');
 
-  if(C.vbg){
-    vidEl.src = C.vbg;
+  var videoSource = '';
+  if(C.vbg === 'LOCAL_VIDEO'){
+    videoSource = localStorage.getItem('local_vbg') || '';
+  } else if(C.vbg){
+    videoSource = C.vbg;
+  }
+
+  if(videoSource){
+    vidEl.src = videoSource;
     vidEl.style.display = 'block';
     vidEl.play().catch(function(){});
   } else {
@@ -834,25 +841,39 @@ function rs(f, mx, t, q, cb){
 
 $('f_bg').onchange=function(){ 
   var f=this.files[0]; 
-  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; C.vbg=''; save(); applyBg(); }); 
+  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; C.vbg=''; localStorage.removeItem('local_vbg'); save(); applyBg(); }); 
 };
 
-$('f_vbg').onchange=function(){
-  var f=this.files[0];
-  if(f){
-    var r = new FileReader();
-    r.onload = function(){
-      C.vbg = r.result;
-      save();
-      applyBg();
+// UPLOAD VIDEO LOKAL GALERI HP / LAPTOP (DURASI SHORT 10-30 DETIK)
+$('f_vbg').onchange = function(){
+  var file = this.files[0];
+  if(file){
+    if(file.size > 30 * 1024 * 1024){
+      alert('File video terlalu besar (Maksimal 30MB). Pilih video pendek 10-30 detik.');
+      this.value = '';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        localStorage.setItem('local_vbg', e.target.result);
+        C.vbg = 'LOCAL_VIDEO';
+        save();
+        applyBg();
+        alert('Video dari galeri berhasil dipasang!');
+      } catch(err) {
+        alert('Memori penyimpanan browser HP penuh. Coba pilih file video dengan durasi lebih pendek.');
+      }
     };
-    r.readAsDataURL(f);
+    reader.readAsDataURL(file);
   }
 };
 
 $('btn_del_video').onclick = function(){
   C.vbg = '';
+  localStorage.removeItem('local_vbg');
   $('f_vbg_url').value = '';
+  $('f_vbg').value = '';
   save();
   applyBg();
   alert('Video background dihapus, kembali menggunakan foto.');
@@ -878,7 +899,7 @@ function fill(){
   $('f_event').value=C.event||'';
   $('f_h').value=C.h;
   $('f_t').value=C.t||'';
-  $('f_vbg_url').value = C.vbg && C.vbg.indexOf('data:') !== 0 ? C.vbg : '';
+  $('f_vbg_url').value = C.vbg && C.vbg !== 'LOCAL_VIDEO' ? C.vbg : '';
   renderPosterList();
   for(var i=0;i<5;i++) $('f_i'+i).value=C.iq[i];
   for(i=0;i<6;i++) $('f_k'+i).value=C.k[i];
@@ -925,6 +946,7 @@ $('sv').onclick=function(){
   var vurl = $('f_vbg_url').value.trim();
   if(vurl){
     C.vbg = vurl;
+    localStorage.removeItem('local_vbg');
   }
   
   for(var i=0;i<5;i++) C.iq[i]=+$('f_i'+i).value||0;
