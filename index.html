@@ -583,12 +583,28 @@ function applyBg(){
     videoSource = localStorage.getItem('local_vbg') || '';
   } else if(C.vbg){
     videoSource = C.vbg;
+    if(videoSource.indexOf('drive.google.com') !== -1){
+      var match = videoSource.match(/\/d\/([^\/\?]+)/);
+      if(match && match[1]){
+        videoSource = 'https://drive.google.com/uc?export=download&id=' + match[1];
+      }
+    }
   }
 
   if(videoSource){
     vidEl.src = videoSource;
+    vidEl.loop = true;
+    vidEl.muted = true;
+    vidEl.playsInline = true;
     vidEl.style.display = 'block';
-    vidEl.play().catch(function(){});
+
+    // Event listener pemaksa instan loop untuk video durasi pendek
+    vidEl.onended = function(){
+      vidEl.currentTime = 0;
+      vidEl.play().catch(function(){});
+    };
+
+    vidEl.play().catch(function(e){ console.log("Autoplay video error:", e); });
   } else {
     vidEl.style.display = 'none';
     vidEl.pause();
