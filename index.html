@@ -122,7 +122,7 @@ body {
 /* ===== AREA UTAMA (FOTO / VIDEO BACKGROUND) ===== */
 #main-view {
   position: relative;
-  background: #111 url('masjid.jpg') center/cover no-repeat;
+  background: #111;
   width: 100%;
   min-height: 35vh;
   overflow: hidden;
@@ -409,8 +409,11 @@ body {
 </head>
 <body>
 
-<!-- AUDIO PLAYER AZAN -->
-<audio id="audio-azan" src="https://cdn.islamic.network/adhan/makkah.mp3" preload="auto"></audio>
+<!-- AUDIO PLAYER AZAN (LINK HANDAL DENGAN MULTIPLE SOURCES) -->
+<audio id="audio-azan" crossorigin="anonymous" preload="auto">
+  <source src="https://ia802808.us.archive.org/32/items/AdhanMakkah/Adhan%20Makkah.mp3" type="audio/mpeg">
+  <source src="https://media.muflihun.com/audio/adhan/adhan-makkah.mp3" type="audio/mpeg">
+</audio>
 
 <!-- TOMBOL SHORTCUT FULLSCREEN -->
 <button id="btn-fullscreen" class="floating-btn" title="Layar Penuh (Fullscreen)">
@@ -667,7 +670,15 @@ function playAzanSound(){
   var audio = $('audio-azan');
   if(audio){
     audio.currentTime = 0;
-    audio.play().catch(function(e){ console.log("Autoplay audio terblokir browser TV:", e); });
+    var promise = audio.play();
+    if(promise !== undefined){
+      promise.catch(function(e){
+        console.log("Mencoba link audio azan cadangan...", e);
+        audio.src = "https://media.muflihun.com/audio/adhan/adhan-makkah.mp3";
+        audio.load();
+        audio.play().catch(function(err){ console.log("Autoplay terblokir browser TV:", err); });
+      });
+    }
   }
 }
 
@@ -918,7 +929,6 @@ $('sv').onclick=function(){
   C.h=+$('f_h').value||0;
   C.t=$('f_t').value;
   
-  // LOGIKA UTAMA: Jika kolom URL diisi, utamakan URL video MP4
   var vurl = $('f_vbg_url').value.trim();
   if(vurl){
     C.vbg = vurl;
