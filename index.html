@@ -232,32 +232,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.2; /* Default: Sangat Transparan */
+  opacity: 0.2;
   transition: opacity 0.3s, transform 0.2s, background 0.3s;
   outline: none;
 }
 
-/* BERUBAH WARNA HANYA SAAT KURSOR DIDEKATKAN (HOVER) */
 .floating-btn:hover {
   opacity: 1;
   background: #00897b;
   transform: scale(1.1);
 }
 
-/* SAAT DI-KLIK / PRESSED: PASTI KEMBALI TRANSPARAN SEMENTARA */
 .floating-btn:active {
   opacity: 0.2;
   background: rgba(0, 0, 0, 0.4);
   transform: scale(0.95);
 }
 
-#btn-fullscreen {
-  left: 0.5vw; /* Ujung Kiri Bawah */
-}
-
-#btn-gear {
-  right: 0.5vw; /* Ujung Kanan Bawah */
-}
+#btn-fullscreen { left: 0.5vw; }
+#btn-gear { right: 0.5vw; }
 
 .floating-btn svg {
   width: 1.2rem;
@@ -265,7 +258,7 @@ body {
   fill: #ffffff;
 }
 
-/* ===== OVERLAY LAYAR FULLSCREEN COUNTDOWN IQAMAH ===== */
+/* ===== OVERLAY LAYAR FULLSCREEN IQAMAH ===== */
 #iqamah-overlay {
   display: none;
   position: fixed;
@@ -404,21 +397,21 @@ body {
 </head>
 <body>
 
-<!-- TOMBOL SHORTCUT FULLSCREEN (UJUNG KIRI BAWAH) -->
+<!-- TOMBOL SHORTCUT FULLSCREEN -->
 <button id="btn-fullscreen" class="floating-btn" title="Layar Penuh (Fullscreen)">
   <svg viewBox="0 0 24 24">
     <path d="M5 9h2V7h2V5H5v4zm2 8H5v-4h2v2h2v2H7zm10-2h-2v2h-2v2h4v-4zm-2-6h2V7h2V5h-4v2z"/>
   </svg>
 </button>
 
-<!-- TOMBOL SHORTCUT PENGATURAN (UJUNG KANAN BAWAH) -->
+<!-- TOMBOL SHORTCUT PENGATURAN -->
 <button id="btn-gear" class="floating-btn" title="Klik untuk Pengaturan (atau Tekan Tombol 'S')">&#9881;</button>
 
 <div id="sl"></div>
 
 <!-- OVERLAY COUNTDOWN IQAMAH -->
 <div id="iqamah-overlay">
-  <div id="iqamah-status">COUNTDOWN IQAMAH</div>
+  <div id="iqamah-status">IQAMAH</div>
   <div id="iqamah-timer">00:00</div>
   <div id="iqamah-sub">Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel</div>
 </div>
@@ -429,7 +422,6 @@ body {
     <span id="clock">--:--:--</span>
   </div>
   
-  <!-- AREA TENGAH DENGAN TEKS BERJALAN CONTINUOUS -->
   <div id="hdr-center">
     <div id="hdr-marquee">
       <div class="hdr-block">
@@ -471,7 +463,6 @@ body {
   <div class="card"><div class="title">Maghrib</div><div class="time" id="t-maghrib">--:--</div><div class="accent-line"></div></div>
   <div class="card"><div class="title">Isya</div><div class="time" id="t-isya">--:--</div><div class="accent-line"></div></div>
   
-  <!-- KARTU UNGU (WAKTU BERIKUTNYA) -->
   <div class="card active-next">
     <div class="title" id="next-name">Isya</div>
     <div class="time" id="next-time">--:--</div>
@@ -529,7 +520,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const dbRef = db.ref('config_masjid');
 
-// KOORDINAT SEPINGGAN BALIKPAPAN
 var LAT = -1.2658, LNG = 116.8977, TZ = 8; 
 var NM = ['Subuh','Terbit','Dzuhur','Ashar','Maghrib','Isya'];
 
@@ -545,7 +535,6 @@ var C = {
   t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
 };
 
-// LISTEN DATA FIREBASE SECARA REALTIME
 dbRef.on('value', function(snapshot){
   var data = snapshot.val();
   if(data){
@@ -652,13 +641,11 @@ function tick(){
   $('badge-event').textContent = C.event;
   if(!C.event) $('badge-event').style.display='none'; else $('badge-event').style.display='block';
 
-  // JAM BERJALAN
   $('clock').textContent = p2(w.getHours()) + ':' + p2(w.getMinutes()) + ':' + p2(w.getSeconds());
   
   $('dates-m').textContent = HARI[w.getDay()] + ', ' + d + ' ' + BLN[m] + ' ' + y;
   $('dates-h').textContent = hijri(y,m,d+(sec>=(T[4]||0)?1:0)+(+C.h||0));
 
-  // WAKTU SHOLAT
   $('t-imsak').textContent = hm(T[0]-600);
   $('t-subuh').textContent = hm(T[0]);
   $('t-terbit').textContent = hm(T[1]);
@@ -667,7 +654,6 @@ function tick(){
   $('t-maghrib').textContent = hm(T[4]);
   $('t-isya').textContent = hm(T[5]);
 
-  // LOGIKA CEK MASUK WAKTU SHOLAT & IQAMAH
   var azanDuration = 30; 
   var activeIqamah = false;
 
@@ -695,7 +681,8 @@ function tick(){
         var rSec = remainingIq % 60;
 
         iqOverlay.style.display = 'flex';
-        $('iqamah-status').textContent = 'COUNTDOWN IQAMAH ' + NM[i].toUpperCase();
+        // REVISI HAPUS "COUNTDOWN"
+        $('iqamah-status').textContent = 'IQAMAH ' + NM[i].toUpperCase();
         $('iqamah-timer').textContent = p2(rMin) + ':' + p2(rSec);
         $('iqamah-sub').textContent = 'Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel';
       } else {
@@ -712,7 +699,6 @@ function tick(){
     $('iqamah-overlay').style.display = 'none';
   }
 
-  // Waktu Sholat Berikutnya
   var NN=NM.slice(); if(w.getDay()==5) NN[2]='Jumat';
   var nextIdx = -1, nextTimeSec = 0, nextName = '';
 
@@ -737,7 +723,6 @@ function tick(){
   var diff = nextTimeSec - sec;
   $('next-count').textContent = '-' + hms(diff);
 
-  // Slide Poster
   var PS=C.pos||[], sl=$('sl'), sh=0;
   if(PS.length && !activeIqamah){
     var pr=20+PS.length*10, pp=Math.floor(Date.now()/1000)%pr;
@@ -800,7 +785,6 @@ $('f_bg').onchange=function(){
 
 bindPosInput();
 
-/* HAPUS SEMUA POSTER KESELURUHAN */
 $('cp').onclick=function(){ 
   if(confirm('Apakah Anda yakin ingin menghapus semua poster pengumuman?')){
     C.pos = []; 
@@ -843,7 +827,6 @@ function toggleFullscreen(){
   }
 }
 
-// FUNGSI UNTUK MERESET FOKUS TOMBOL SUPAYA PASTI TRANSPARAN KEMBALI
 $('btn-fullscreen').onclick = function(){
   toggleFullscreen();
   this.blur();
