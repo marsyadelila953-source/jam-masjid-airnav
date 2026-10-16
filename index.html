@@ -409,11 +409,9 @@ body {
 </head>
 <body>
 
-<!-- AUDIO PLAYER AZAN (LINK HANDAL DENGAN MULTIPLE SOURCES) -->
-<audio id="audio-azan" crossorigin="anonymous" preload="auto">
-  <source src="https://ia802808.us.archive.org/32/items/AdhanMakkah/Adhan%20Makkah.mp3" type="audio/mpeg">
-  <source src="https://media.muflihun.com/audio/adhan/adhan-makkah.mp3" type="audio/mpeg">
-</audio>
+<!-- AUDIO PLAYER AZAN LOKAL (100% BEBAS DARI BLOKIR JARINGAN) -->
+<audio id="audio-azan" src="azan.mp3" preload="auto"></audio>
+<audio id="audio-azan-subuh" src="azan-subuh.mp3" preload="auto"></audio>
 
 <!-- TOMBOL SHORTCUT FULLSCREEN -->
 <button id="btn-fullscreen" class="floating-btn" title="Layar Penuh (Fullscreen)">
@@ -666,19 +664,14 @@ var BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','Sep
 
 var SHOLAT_IQ_MAP = [0, -1, 1, 2, 3, 4]; 
 
-function playAzanSound(){
-  var audio = $('audio-azan');
+function playAzanSound(isSubuh){
+  var audioId = isSubuh ? 'audio-azan-subuh' : 'audio-azan';
+  var audio = $(audioId);
   if(audio){
     audio.currentTime = 0;
-    var promise = audio.play();
-    if(promise !== undefined){
-      promise.catch(function(e){
-        console.log("Mencoba link audio azan cadangan...", e);
-        audio.src = "https://media.muflihun.com/audio/adhan/adhan-makkah.mp3";
-        audio.load();
-        audio.play().catch(function(err){ console.log("Autoplay terblokir browser TV:", err); });
-      });
-    }
+    audio.play().catch(function(e){ 
+      console.log("Autoplay terblokir browser TV/Laptop:", e); 
+    });
   }
 }
 
@@ -727,7 +720,7 @@ function tick(){
 
       if(elapsed === 0 && !playedAzan[i]){
         playedAzan[i] = true;
-        playAzanSound();
+        playAzanSound(i === 0);
       }
 
       if(elapsed < azanDuration){
