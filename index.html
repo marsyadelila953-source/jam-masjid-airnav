@@ -653,6 +653,8 @@ function applyBg(){
     vidEl.pause();
     if(C.bg){
       mainView.style.backgroundImage = "url('" + C.bg + "')";
+      mainView.style.backgroundSize = "cover";
+      mainView.style.backgroundPosition = "center bottom"; // FOKUS GAMBAR DITARIK KE BAWAH
     }
   }
 }
