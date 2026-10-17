@@ -119,24 +119,16 @@ body {
 #dates-m { font-size: 1.8vw; font-weight: 800; color: #111111; }
 #dates-h { font-size: 1.35vw; color: #44444a; font-weight: 700; margin-top: 0.3vh; }
 
-/* ===== AREA UTAMA (FOTO / VIDEO BACKGROUND) ===== */
+/* ===== AREA UTAMA (FOTO LATAR BELAKANG) ===== */
 #main-view {
   position: relative;
-  background: #111;
+  background: #000;
   width: 100%;
-  min-height: 35vh;
+  min-height: 42vh;
   overflow: hidden;
-}
-
-#bg-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  object-fit: cover;
-  display: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .badge-right {
@@ -213,39 +205,6 @@ body {
   100% { transform: translateX(-100%); }
 }
 
-/* ===== OVERLAY VIDEO PROFIL PERUSAHAAN ===== */
-#company-video-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 85;
-  background: #000;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#company-video-player {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-#btn-close-company-video {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(211, 47, 47, 0.8);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 86;
-}
-
 /* ===== TOMBOL SHORTCUT ===== */
 .floating-btn {
   position: fixed;
@@ -288,50 +247,105 @@ body {
   fill: #ffffff;
 }
 
-/* ===== OVERLAY AZAN & IQAMAH ===== */
+/* ===== OVERLAY AZAN & IQAMAH (STYLE ARCH ELEGAN) ===== */
 #iqamah-overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 90;
-  background: radial-gradient(circle, #1a237e 0%, #0d47a1 100%);
-  color: #fff;
+  background: #eef2f5;
+  color: #111;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 3vh 3vw;
+}
+
+.arch-card {
+  background: #ffffff;
+  width: 85vw;
+  height: 82vh;
+  border-radius: 120px;
+  border: 6px solid #e0a938;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 3vh 4vw;
   text-align: center;
-  padding: 2vh 4vw;
+  position: relative;
 }
 
-#iqamah-status {
-  font-size: 3.5vw;
-  font-weight: 800;
-  color: #ffca28;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 2vh;
-  text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-
+/* Jam Utama (Countdown Iqamah / Jam Sholat) */
 #iqamah-timer {
-  font-size: 18vw;
+  font-size: 14vw;
   font-weight: 900;
-  color: #ffffff;
+  color: #111827;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  margin: 1vh 0;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  letter-spacing: -1px;
 }
 
-#iqamah-sub {
-  font-size: 2.2vw;
-  color: #e0e0e0;
-  font-weight: 600;
-  margin-top: 2vh;
-  background: rgba(0,0,0,0.4);
-  padding: 1vh 3vw;
+/* Garis Pembatas dengan Badge Realtime Clock */
+.divider-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  position: relative;
+  margin: 1vh 0;
+}
+
+.divider-line {
+  height: 2px;
+  background: #e0a938;
+  flex: 1;
+  position: relative;
+}
+
+.divider-line::before, .divider-line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  background: #e0a938;
+  border-radius: 50%;
+}
+.divider-line.left::after { right: 15px; }
+.divider-line.right::before { left: 15px; }
+
+.realtime-badge {
+  background: #111827;
+  color: #ffffff;
+  padding: 0.8vh 2.2vw;
   border-radius: 50px;
-  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 2.2vw;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  margin: 0 2vw;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Teks Status Sholat */
+#iqamah-status {
+  font-size: 4.2vw;
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+/* Teks Sub / Hadits Shahih */
+#iqamah-sub {
+  font-size: 1.8vw;
+  color: #4b5563;
+  font-weight: 600;
+  max-width: 85%;
+  line-height: 1.4;
 }
 
 /* ===== MODAL PENGATURAN ===== */
@@ -417,9 +431,12 @@ body {
   #run { font-size: 1rem; padding: 8px 0; }
   .floating-btn { width: 3rem; height: 3rem; font-size: 1.4rem; opacity: 0.6; }
   .floating-btn svg { width: 1.4rem; height: 1.4rem; }
-  #iqamah-status { font-size: 1.5rem; }
+  
+  .arch-card { width: 92vw; height: 85vh; border-radius: 50px; border-width: 4px; }
   #iqamah-timer { font-size: 4rem; }
-  #iqamah-sub { font-size: 1rem; }
+  .realtime-badge { font-size: 1rem; padding: 4px 12px; }
+  #iqamah-status { font-size: 1.6rem; }
+  #iqamah-sub { font-size: 0.9rem; }
 }
 </style>
 </head>
@@ -441,17 +458,23 @@ body {
 
 <div id="sl"></div>
 
-<!-- OVERLAY VIDEO PROFIL PERUSAHAAN -->
-<div id="company-video-overlay">
-  <button id="btn-close-company-video">✕ Tutup Video</button>
-  <video id="company-video-player" playsinline></video>
-</div>
-
-<!-- OVERLAY AZAN & IQAMAH -->
+<!-- OVERLAY AZAN & IQAMAH (STYLE DESAIN ARCH ELEGAN) -->
 <div id="iqamah-overlay">
-  <div id="iqamah-status">AZAN</div>
-  <div id="iqamah-timer">00:00</div>
-  <div id="iqamah-sub">Mendengarkan Azan & Membaca Doa Setelah Azan</div>
+  <div class="arch-card">
+    <div id="iqamah-timer">00:00</div>
+    
+    <div class="divider-box">
+      <div class="divider-line left"></div>
+      <div class="realtime-badge">
+        <span>🕒</span>
+        <span id="overlay-clock">--:--:--</span>
+      </div>
+      <div class="divider-line right"></div>
+    </div>
+    
+    <div id="iqamah-status">Saatnya Azan</div>
+    <div id="iqamah-sub">"Mendengarkan azan dan membaca doa setelah azan dengan khusyuk."</div>
+  </div>
 </div>
 
 <!-- HEADER UTAMA -->
@@ -485,9 +508,8 @@ body {
   </div>
 </div>
 
-<!-- FOTO / VIDEO UTAMA -->
+<!-- FOTO UTAMA GEDUNG AIRNAV -->
 <div id="main-view">
-  <video id="bg-video" autoplay loop muted playsinline></video>
   <div class="badge-right" id="badge-event">Sepinggan, Balikpapan</div>
 </div>
 
@@ -523,17 +545,7 @@ body {
   <label>Alamat / Sub Judul: <input id="f_alamat"></label>
   <label>Teks Badge Merah (Kanan Atas Foto): <input id="f_event"></label>
   
-  <label>Foto Latar Belakang Gedung: <input type="file" id="f_bg" accept="image/*"></label>
-  <label>Video Latar Belakang (Galeri HP/Laptop 10-30dtk / Link URL): 
-    <input type="file" id="f_vbg" accept="video/mp4,video/webm">
-    <input id="f_vbg_url" placeholder="Atau paste URL Video MP3/MP4 di sini..." style="margin-top: 5px;">
-    <button id="btn_del_video" type="button" style="background:#d32f2f; margin-top:5px; font-size:0.8rem; padding: 4px 10px;">🗑️ Hapus Video (Kembali ke Foto)</button>
-  </label>
-
-  <label>🎥 Video Profil Perusahaan (Diputar 3 Jam 1x Bersuara - Durasi 3-7 Menit):
-    <input id="f_comp_vurl" placeholder="Paste URL direct MP4 Video Profil di sini (Contoh: Catbox.moe)...">
-    <button id="btn_test_comp_video" type="button" style="background:#0288d1; margin-top:5px; font-size:0.8rem; padding: 4px 10px;">▶️ Tes Putar Video Profil Sekarang</button>
-  </label>
+  <label>Foto Latar Belakang Gedung AirNav: <input type="file" id="f_bg" accept="image/*"></label>
   
   <label>Tambah Poster Pengumuman Slide: 
     <span id="f_pos_wrapper"><input type="file" id="f_pos" accept="image/*" multiple></span>
@@ -579,15 +591,12 @@ var C = {
   iq: [10,10,10,5,10],
   h: 0,
   bg: '',
-  vbg: '',
-  comp_vbg: '',
   pos: [],
   k: [0,0,0,0,0,0],
   t: 'Luruskan dan rapatkan shaf. Matikan ponsel saat sholat. Jagalah kebersihan masjid.'
 };
 
 var playedAzan = {};
-var lastCompanyVideoHour = -1; 
 
 dbRef.on('value', function(snapshot){
   var data = snapshot.val();
@@ -603,59 +612,9 @@ dbRef.on('value', function(snapshot){
 });
 
 function applyBg(){
-  var vidEl = $('bg-video');
   var mainView = $('main-view');
-
-  var videoSource = '';
-  if(C.vbg === 'LOCAL_VIDEO'){
-    videoSource = localStorage.getItem('local_vbg') || '';
-  } else if(C.vbg){
-    videoSource = C.vbg;
-    if(videoSource.indexOf('drive.google.com') !== -1){
-      var match = videoSource.match(/\/d\/([^\/\?]+)/);
-      if(match && match[1]){
-        videoSource = 'https://drive.google.com/uc?export=download&id=' + match[1];
-      }
-    }
-  }
-
-  if(videoSource){
-    vidEl.pause();
-    
-    vidEl.muted = true;
-    vidEl.defaultMuted = true;
-    vidEl.setAttribute('muted', '');
-    vidEl.setAttribute('playsinline', '');
-    vidEl.setAttribute('autoplay', '');
-    vidEl.loop = true;
-
-    if(vidEl.src !== videoSource){
-      vidEl.src = videoSource;
-      vidEl.load();
-    }
-
-    vidEl.style.display = 'block';
-
-    vidEl.onended = function(){
-      vidEl.currentTime = 0;
-      var p = vidEl.play();
-      if(p && p.catch) p.catch(function(){});
-    };
-
-    var playPromise = vidEl.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(function(error) {
-        console.log("Autoplay dicegah browser TV:", error);
-      });
-    }
-  } else {
-    vidEl.style.display = 'none';
-    vidEl.pause();
-    if(C.bg){
-      mainView.style.backgroundImage = "url('" + C.bg + "')";
-      mainView.style.backgroundSize = "cover";
-      mainView.style.backgroundPosition = "center bottom"; // FOKUS GAMBAR DITARIK KE BAWAH
-    }
+  if(C.bg){
+    mainView.style.backgroundImage = "url('" + C.bg + "')";
   }
 }
 
@@ -751,40 +710,12 @@ function playAzanSound(isSubuh){
   }
 }
 
-function playCompanyVideo(){
-  if(!C.comp_vbg) return;
-  var overlay = $('company-video-overlay');
-  var player = $('company-video-player');
-  
-  player.src = C.comp_vbg;
-  player.currentTime = 0;
-  player.muted = false;
-  overlay.style.display = 'flex';
-  
-  player.play().catch(function(e){
-    console.log("Gagal memutar video profil bersuara:", e);
-    player.muted = true;
-    player.play().catch(function(){});
-  });
-
-  player.onended = function(){
-    closeCompanyVideo();
-  };
-}
-
-function closeCompanyVideo(){
-  var overlay = $('company-video-overlay');
-  var player = $('company-video-player');
-  player.pause();
-  overlay.style.display = 'none';
-}
-
-$('btn-close-company-video').onclick = closeCompanyVideo;
-
 function tick(){
   var w=new Date(), y=w.getFullYear(), m=w.getMonth(), d=w.getDate();
   var sec=w.getHours()*3600+w.getMinutes()*60+w.getSeconds();
   var T=calc(y,m,d), N=calc(y,m,d+1);
+
+  var timeStr = p2(w.getHours()) + ':' + p2(w.getMinutes()) + ':' + p2(w.getSeconds());
 
   var nms = document.querySelectorAll('.nm-text');
   nms.forEach(function(el){ el.textContent = C.nama; });
@@ -795,7 +726,8 @@ function tick(){
   $('badge-event').textContent = C.event;
   if(!C.event) $('badge-event').style.display='none'; else $('badge-event').style.display='block';
 
-  $('clock').textContent = p2(w.getHours()) + ':' + p2(w.getMinutes()) + ':' + p2(w.getSeconds());
+  $('clock').textContent = timeStr;
+  $('overlay-clock').textContent = timeStr;
   
   $('dates-m').textContent = HARI[w.getDay()] + ', ' + d + ' ' + BLN[m] + ' ' + y;
   $('dates-h').textContent = hijri(y,m,d+(sec>=(T[4]||0)?1:0)+(+C.h||0));
@@ -809,7 +741,6 @@ function tick(){
   $('t-isya').textContent = hm(T[5]);
 
   var activeIqamah = false;
-  var isNearPrayer = false; 
 
   for(var i=0; i<6; i++){
     if(i === 1) continue; 
@@ -818,12 +749,9 @@ function tick(){
     var iqIdx = SHOLAT_IQ_MAP[i];
     var iqMinutes = (iqIdx !== -1) ? (C.iq[iqIdx] || 10) : 10;
     
+    // DURASI AZAN PRESISI SESUAI FILE AUDIO
     var azanDuration = (i === 0) ? 187 : 203;
     var iqamahTotalSec = azanDuration + (iqMinutes * 60);
-
-    if(sec >= (sholatSec - 600) && sec < sholatSec){
-      isNearPrayer = true;
-    }
 
     if(sec >= sholatSec && sec < (sholatSec + iqamahTotalSec + 10)){
       activeIqamah = true;
@@ -835,43 +763,45 @@ function tick(){
         playAzanSound(i === 0);
       }
 
+      // DAFTAR HADITS SHAHIH BERGANTI DENGAN WAKTU SHOLAT
+      var HADITS_LIST = [
+        '"Barangsiapa yang sholat Subuh berjamaah, maka ia berada dalam jaminan Allah." - HR. Muslim',
+        '', 
+        (w.getDay() === 5 ? '"Sebaik-baik hari yang matahari terbit padanya adalah hari Jumat." - HR. Muslim' : '"Sholat berjamaah itu lebih utama dibanding sholat sendirian dengan dua puluh tujuh derajat." - HR. al-Bukhari & Muslim'),
+        '"Barangsiapa yang meninggalkan sholat Ashar, maka gugurlah amal kebaikannya." - HR. al-Bukhari',
+        '"Doa antara azan dan iqamah tidak akan ditolak, maka berdoalah." - HR. Tirmidzi & Abu Dawud',
+        '"Seandainya mereka tahu pahala sholat Isya dan Subuh, niscaya mereka mendatanginya walau merangkak." - HR. al-Bukhari & Muslim'
+      ];
+
+      var currentHadits = HADITS_LIST[i] || '"Sholat berjamaah itu lebih utama dibanding sholat sendirian dengan dua puluh tujuh derajat." - HR. al-Bukhari & Muslim';
+      var namaSholat = (w.getDay() === 5 && i === 2 ? 'Jumat' : NM[i]);
+
+      // 1. TAMPILAN AZAN
       if(elapsed < azanDuration){
         iqOverlay.style.display = 'flex';
-        $('iqamah-status').textContent = 'SAATNYA AZAN ' + NM[i].toUpperCase();
         $('iqamah-timer').textContent = hm(sholatSec);
-        $('iqamah-sub').textContent = 'Mendengarkan Azan & Membaca Doa Setelah Azan';
+        $('iqamah-status').textContent = 'Saatnya Azan ' + namaSholat;
+        $('iqamah-sub').textContent = '"Mendengarkan azan dan membaca doa setelah azan dengan khusyuk."';
       } 
+      // 2. TAMPILAN MUNDUR IQAMAH + HADITS SHAHIH
       else if(elapsed < iqamahTotalSec){
         var remainingIq = iqamahTotalSec - elapsed;
         var rMin = Math.floor(remainingIq / 60);
         var rSec = remainingIq % 60;
 
         iqOverlay.style.display = 'flex';
-        $('iqamah-status').textContent = 'IQAMAH ' + NM[i].toUpperCase();
         $('iqamah-timer').textContent = p2(rMin) + ':' + p2(rSec);
-        $('iqamah-sub').textContent = 'Luruskan & Rapatkan Shaf • Harap Matikan / Heningkan Ponsel';
+        $('iqamah-status').textContent = 'Iqamah ' + namaSholat + ' - ' + hm(sholatSec);
+        $('iqamah-sub').textContent = currentHadits;
       } 
+      // 3. TAMPILAN LURUSKAN SHAF & BERSHIAP SHOLAT
       else {
         iqOverlay.style.display = 'flex';
-        $('iqamah-status').textContent = 'LURUSKAN & RAPATKAN SHAF';
         $('iqamah-timer').textContent = '00:00';
-        $('iqamah-sub').textContent = 'SAATNYA SHOLAT BERJAMAAH';
+        $('iqamah-status').textContent = 'Luruskan & Rapatkan Shaf';
+        $('iqamah-sub').textContent = 'Harap mematikan atau mengheningkan nada dering ponsel demi kekhusyukan jamaah.';
       }
       break;
-    }
-  }
-
-  if(activeIqamah || isNearPrayer){
-    closeCompanyVideo();
-  }
-
-  var currentHour = w.getHours();
-  if(currentHour % 3 === 0 && w.getMinutes() === 0 && w.getSeconds() === 0){
-    if(lastCompanyVideoHour !== currentHour){
-      lastCompanyVideoHour = currentHour;
-      if(!activeIqamah && !isNearPrayer && C.comp_vbg){
-        playCompanyVideo();
-      }
     }
   }
 
@@ -906,7 +836,7 @@ function tick(){
   $('next-count').textContent = '-' + hms(diff);
 
   var PS=C.pos||[], sl=$('sl'), sh=0;
-  if(PS.length && !activeIqamah && $('company-video-overlay').style.display !== 'flex'){
+  if(PS.length && !activeIqamah){
     var pr=20+PS.length*10, pp=Math.floor(Date.now()/1000)%pr;
     if(pp>=20){
       var ix=Math.floor((pp-20)/10);
@@ -962,52 +892,7 @@ function rs(f, mx, t, q, cb){
 
 $('f_bg').onchange=function(){ 
   var f=this.files[0]; 
-  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; C.vbg=''; localStorage.removeItem('local_vbg'); save(); applyBg(); }); 
-};
-
-// UPLOAD VIDEO LOKAL GALERI HP / LAPTOP
-$('f_vbg').onchange = function(){
-  var file = this.files[0];
-  if(file){
-    if(file.size > 30 * 1024 * 1024){
-      alert('File video terlalu besar (Maksimal 30MB). Pilih video pendek 10-30 detik.');
-      this.value = '';
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e){
-      try {
-        localStorage.setItem('local_vbg', e.target.result);
-        C.vbg = 'LOCAL_VIDEO';
-        save();
-        applyBg();
-        alert('Video dari galeri berhasil dipasang!');
-      } catch(err) {
-        alert('Memori penyimpanan browser HP penuh. Coba pilih file video dengan durasi lebih pendek.');
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-$('btn_del_video').onclick = function(){
-  C.vbg = '';
-  localStorage.removeItem('local_vbg');
-  $('f_vbg_url').value = '';
-  $('f_vbg').value = '';
-  save();
-  applyBg();
-  alert('Video background dihapus, kembali menggunakan foto.');
-};
-
-$('btn_test_comp_video').onclick = function(){
-  var vurl = $('f_comp_vurl').value.trim();
-  if(vurl){
-    C.comp_vbg = vurl;
-    playCompanyVideo();
-  } else {
-    alert('Masukkan URL direct MP4 video profil perusahaan terlebih dahulu.');
-  }
+  if(f) rs(f, 1280, 'image/jpeg', 0.6, function(u){ C.bg=u; save(); applyBg(); }); 
 };
 
 bindPosInput();
@@ -1030,8 +915,6 @@ function fill(){
   $('f_event').value=C.event||'';
   $('f_h').value=C.h;
   $('f_t').value=C.t||'';
-  $('f_vbg_url').value = C.vbg && C.vbg !== 'LOCAL_VIDEO' ? C.vbg : '';
-  $('f_comp_vurl').value = C.comp_vbg || '';
   renderPosterList();
   for(var i=0;i<5;i++) $('f_i'+i).value=C.iq[i];
   for(i=0;i<6;i++) $('f_k'+i).value=C.k[i];
@@ -1074,14 +957,6 @@ $('sv').onclick=function(){
   C.event=$('f_event').value;
   C.h=+$('f_h').value||0;
   C.t=$('f_t').value;
-  
-  var vurl = $('f_vbg_url').value.trim();
-  if(vurl){
-    C.vbg = vurl;
-    localStorage.removeItem('local_vbg');
-  }
-
-  C.comp_vbg = $('f_comp_vurl').value.trim();
   
   for(var i=0;i<5;i++) C.iq[i]=+$('f_i'+i).value||0;
   for(i=0;i<6;i++) C.k[i]=+$('f_k'+i).value||0;
